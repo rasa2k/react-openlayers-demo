@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
-import { OSM, TileWMS } from "ol/source";
+import ImageLayer from "ol/layer/Image";
+import { OSM } from "ol/source";
+import { ImageWMS } from "ol/source";
+//import { TileWMS } from "ol/source";
 import "ol/ol.css";
 import proj4 from "proj4";
 import { register } from "ol/proj/proj4";
@@ -24,10 +27,32 @@ function App() {
         new TileLayer({
           source: new OSM(),
         }),
-        new TileLayer({
-          source: new TileWMS({
+        // new TileLayer({
+        //   source: new TileWMS({
+        //     url: "https://development.waternet.dhigroup.com/cso_webapi/api/geoserver/wms?",
+        //     tileLoadFunction: async function (tile: any, src: string) {
+        //       const settings = {
+        //         headers: {
+        //           "muwa-authtoken": "o/7G2oo5c4kTby7/mkewsRPf6TNoGm7kSF6n3j+TM7WfDg1rfmZttlZCxyPgSJaXUOBhEZpuKkQYyp1M2kBfRKK/gqPoMOJwqh0Rx3K0lSEwScHmYgjie2/rhdQp+yZYPJlDAhIDpnrdbgp2qFjQevTqghRYaxfoUj4GsPMg+eI=",
+        //         },
+        //       };
+        //       const response = await fetch(src, settings);
+        //       const imageData = await response.blob();
+
+        //       const imageElement = tile.getImage() as HTMLImageElement;
+        //       imageElement.src = window.URL.createObjectURL(imageData);
+        //     },
+        //     params: {
+        //       VERSION: "1.1.0",
+        //       viewparams: "u_id:4d635607f7634ec4a3b8675bceb47a1a",
+        //       LAYERS: "cso:locality,cso:raingauge,cso:catchment,cso:catchcon,cso:link,cso:link_hidden,cso:manhole,cso:basin,cso:csov,cso:cov,cso:outlet,cso:weir,cso:resultstatus_n_ok",
+        //     },
+        //   }),
+        // }),
+        new ImageLayer({
+          source: new ImageWMS({
             url: "https://development.waternet.dhigroup.com/cso_webapi/api/geoserver/wms?",
-            tileLoadFunction: async function (tile: any, src: string) {
+            imageLoadFunction: async function (tile: any, src: string) {
               const settings = {
                 headers: {
                   "muwa-authtoken": "o/7G2oo5c4kTby7/mkewsRPf6TNoGm7kSF6n3j+TM7WfDg1rfmZttlZCxyPgSJaXUOBhEZpuKkQYyp1M2kBfRKK/gqPoMOJwqh0Rx3K0lSEwScHmYgjie2/rhdQp+yZYPJlDAhIDpnrdbgp2qFjQevTqghRYaxfoUj4GsPMg+eI=",
@@ -39,6 +64,8 @@ function App() {
               const imageElement = tile.getImage() as HTMLImageElement;
               imageElement.src = window.URL.createObjectURL(imageData);
             },
+            ratio: 1,
+            serverType: "geoserver",
             params: {
               VERSION: "1.1.0",
               viewparams: "u_id:4d635607f7634ec4a3b8675bceb47a1a",
